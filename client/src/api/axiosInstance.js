@@ -6,7 +6,7 @@ export const baseUrl =
   // eslint-disable-next-line no-undef
   process.env.REACT_APP_ENV === 'staging'
     ? 'http://localhost:3001/api'
-    : 'https://course-gpt.herokuapp.com/api';
+    : 'https://research-gpt-13kt.onrender.com/api';
 
 const api = axios.create({
   baseURL: baseUrl,
