@@ -30,7 +30,7 @@ function setupExpress(app) {
   const corsOptions = {
     origin:
       process.env.NODE_ENV === 'production'
-        ? 'https://course-gpt.herokuapp.com/'
+        ? 'https://research-gpt-client.onrender.com'
         : 'http://localhost:3000',
     credentials: true,
   };
