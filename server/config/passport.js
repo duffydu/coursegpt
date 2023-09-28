@@ -4,7 +4,7 @@ const User = require('../models/user');
 
 const callback =
   process.env.NODE_ENV === 'production'
-    ? 'https://course-gpt.herokuapp.com/api/auth/google/callback'
+    ? 'https://research-gpt-client.onrender.com/api/auth/google/callback'
     : '/api/auth/google/callback';
 
 passport.use(
