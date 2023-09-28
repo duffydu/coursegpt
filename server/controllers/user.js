@@ -1,7 +1,7 @@
 const User = require('../models/user');
 
 async function updateUser(req, res) {
-  const userId = req.user.id;
+  const userId = req.params.userId;
   const updates = req.body;
 
   try {

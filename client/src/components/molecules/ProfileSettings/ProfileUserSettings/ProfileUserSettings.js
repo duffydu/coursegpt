@@ -32,7 +32,8 @@ const ProfileUserSettings = ({ handleClose }) => {
     const updatedUser = {
       ...userInfo,
     };
-    dispatch(updateUser(updatedUser));
+    // dispatch(updateUser(updatedUser));
+    dispatch(updateUser({userId: user._id, updatedUser: updatedUser}));
     handleClose();
   };
 

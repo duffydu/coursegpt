@@ -44,9 +44,9 @@ function setupExpress(app) {
 function setupRoutes(app) {
   app.use('/api/chats/:chatId/messages/:messageId/feedback', feedbackRoutes);
   app.use('/api/feedbackData', feedbackDataRoutes);
-  app.use('/api/chats/:chatId/messages', messageRoutes);
-  app.use('/api/chats', chatRoutes);
-  app.use('/api/schools/:schoolId/courses', courseRoutes);
+  app.use('/api/:userId/chats/:chatId/messages', messageRoutes);
+  app.use('/api/:userId/chats', chatRoutes);
+  app.use('/api/schools/:schoolId/courses/:userId', courseRoutes);
   app.use('/api/auth', authRoutes);
   app.use('/api/users', userRoutes);
   app.use('/api/schools', schoolRoutes);

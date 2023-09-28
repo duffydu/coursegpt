@@ -11,17 +11,18 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { trainCurrentlySelectedDropdownCourse } from '../../../redux/coursesSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const TrainCourseModal = ({ isOpen, handleClose, selectedCourseName }) => {
   const [textAreaValue, setTextAreaValue] = useState('');
+  const user = useSelector(state => state.user);
   const dispatch = useDispatch();
   const handleTextAreaChange = event => {
     setTextAreaValue(event.target.value);
   };
 
   function onTrain() {
-    dispatch(trainCurrentlySelectedDropdownCourse(textAreaValue));
+    dispatch(trainCurrentlySelectedDropdownCourse({userId: user._id, content: textAreaValue}));
     setTextAreaValue('');
     handleClose();
   }

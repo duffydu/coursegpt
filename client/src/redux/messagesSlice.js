@@ -22,28 +22,28 @@ const handleRequestError = error => {
 };
 
 // Async Functions
-const fetchMessages = async chatId => {
-  const response = await api.get(`/chats/${chatId}/messages`);
+const fetchMessages = async (userId, chatId) => {
+  const response = await api.get(`${userId}/chats/${chatId}/messages`);
   return buildObjectMapFromArray(response.data.messages);
 };
 
-export const fetchChatMessages = createAsyncThunk(
-  'messages/fetchChatMessages',
-  async chatId => {
-    try {
-      return await fetchMessages(chatId);
-    } catch (error) {
-      handleRequestError(error);
-    }
-  }
-);
+// export const fetchChatMessages = createAsyncThunk(
+//   'messages/fetchChatMessages',
+//   async chatId => {
+//     try {
+//       return await fetchMessages(chatId);
+//     } catch (error) {
+//       handleRequestError(error);
+//     }
+//   }
+// );
 
 export const fetchActiveChatMessages = createAsyncThunk(
   'messages/fetchActiveChatMessages',
-  async (_, { getState }) => {
+  async (userId, { getState }) => {
     try {
       const chatId = getState().chats.activeChat._id;
-      return await fetchMessages(chatId);
+      return await fetchMessages(userId, chatId);
     } catch (error) {
       handleRequestError(error);
     }
@@ -52,11 +52,13 @@ export const fetchActiveChatMessages = createAsyncThunk(
 
 export const createUserMessageInActiveChat = createAsyncThunk(
   'messages/createUserMessageInActiveChat',
-  async (message, { getState }) => {
+  async (args, { getState }) => {
     try {
+      const userId = args.userId;
+      const message = args.message;
       const newMessage = message || getState().messages.currentUserInput;
       const chatId = getState().chats.activeChat?._id;
-      const response = await api.post(`/chats/${chatId}/messages`, {
+      const response = await api.post(`${userId}/chats/${chatId}/messages`, {
         content: newMessage,
       });
       return response.data.message;
@@ -68,11 +70,13 @@ export const createUserMessageInActiveChat = createAsyncThunk(
 
 export const getGptResponseInChat = createAsyncThunk(
   'messages/getGptResponseInChat',
-  async userMessageObject => {
+  async args => {
     try {
+      const userId = args.userId;
+      const userMessageObject = args.userMessageObject;
       const chatId = userMessageObject.chat;
       await api.post(
-        `/chats/${chatId}/messages/gpt-response`,
+        `${userId}/chats/${chatId}/messages/gpt-response`,
         userMessageObject
       );
 
@@ -81,7 +85,7 @@ export const getGptResponseInChat = createAsyncThunk(
       do {
         await new Promise(resolve => setTimeout(resolve, 500)); // polls every 0.5 seconds for gpt message status
         const response = await api.get(
-          `/chats/${chatId}/messages/gpt-response-status`
+          `${userId}/chats/${chatId}/messages/gpt-response-status`
         );
         status = response.data.status;
         message = response.data.message;
@@ -115,12 +119,12 @@ const messagesSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(fetchChatMessages.pending, handlePending)
-      .addCase(fetchChatMessages.fulfilled, (state, action) => {
-        state.messages = { ...state.messages, ...action.payload };
-        handleLoading(state, false);
-      })
-      .addCase(fetchChatMessages.rejected, handleRejected)
+      // .addCase(fetchChatMessages.pending, handlePending)
+      // .addCase(fetchChatMessages.fulfilled, (state, action) => {
+      //   state.messages = { ...state.messages, ...action.payload };
+      //   handleLoading(state, false);
+      // })
+      // .addCase(fetchChatMessages.rejected, handleRejected)
       .addCase(fetchActiveChatMessages.pending, handlePending)
       .addCase(fetchActiveChatMessages.fulfilled, (state, action) => {
         state.messages = { ...state.messages, ...action.payload };

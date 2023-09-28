@@ -6,9 +6,9 @@ const {
   getGptResponse,
   checkGptResponse,
 } = require('../controllers/message');
-const { validateToken } = require('../controllers/auth');
+// const { validateToken } = require('../controllers/auth');
 
-router.use(validateToken);
+// router.use(validateToken);
 
 router.get('/', getAllMessages);
 router.get('/search', getAllMessages);

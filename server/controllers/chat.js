@@ -16,7 +16,8 @@ async function getChat(req, res) {
 
 async function getChats(req, res) {
   try {
-    const userId = req.user.id;
+    // const userId = req.user.id;
+    const userId = req.params.userId;
     const chats = await Chat.find({ user: userId, deleted: false });
     res.send({ chats });
   } catch (error) {
@@ -26,7 +27,8 @@ async function getChats(req, res) {
 }
 
 async function createChat(req, res) {
-  const userId = req.user.id;
+  // const userId = req.user.id;
+  const userId = req.params.userId;
   try {
     const chat = new Chat({
       user: userId,
@@ -50,7 +52,7 @@ async function createChat(req, res) {
 
 async function softDeleteChats(req, res) {
   let filter = req.body.filter;
-  filter.user = req.user.id;
+  filter.user = req.params.userId;
   const updates = req.body.updates;
 
   try {
@@ -60,7 +62,7 @@ async function softDeleteChats(req, res) {
     // also set associated messages to deleted
     chats.forEach(chat => {
       let messageFilter = {
-        user: req.user.id,
+        user: req.params.userId,
         chat: chat._id,
         deleted: false,
       };
@@ -90,7 +92,7 @@ async function softDeleteChat(req, res) {
 
     // also set associated messages to deleted
     const filter = {
-      user: req.user.id,
+      user: req.params.userId,
       chat: chatId,
       deleted: false,
     };

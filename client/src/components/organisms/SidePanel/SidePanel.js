@@ -34,6 +34,7 @@ const SidePanel = ({ setSeeFeedback, isAnalyticsSidePanel }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isGptLoading = useSelector(state => state.messages.gptLoading);
+  const user = useSelector(state => state.user);
   const userFirst = useSelector(state => state.user.firstName);
   const userLast = useSelector(state => state.user.lastName);
   const favouriteCourses = useSelector(userFavouriteCoursesSelector);
@@ -76,13 +77,15 @@ const SidePanel = ({ setSeeFeedback, isAnalyticsSidePanel }) => {
     const newCourseId = event.target.value;
     if (newCourseId === '') {
       dispatch(setCurrentlySelectedDropdownCourse(null));
-      dispatch(updateUser({ selectedCourse: null }));
+      // dispatch(updateUser({ selectedCourse: null }));
+      dispatch(updateUser({userId: user._id, updatedUser: { selectedCourse: null }}));
       setFilteredChatsToShow([]);
       setDisableNewChatButton(true);
     } else {
       const newCourse = favouriteCourses[newCourseId];
       dispatch(setCurrentlySelectedDropdownCourse(newCourse));
-      dispatch(updateUser({ selectedCourse: newCourseId }));
+      // dispatch(updateUser({ selectedCourse: newCourseId }));
+      dispatch(updateUser({userId: user._id, updatedUser: { selectedCourse: newCourseId }}));
       setDisableNewChatButton(isGptLoading);
     }
     dispatch(setFocusedChat(null));
@@ -94,13 +97,13 @@ const SidePanel = ({ setSeeFeedback, isAnalyticsSidePanel }) => {
   const handleExistingChatClick = async chatId => {
     await dispatch(setActiveChat(chatId));
     await dispatch(setFocusedChat(chatId));
-    await dispatch(fetchActiveChatMessages());
+    await dispatch(fetchActiveChatMessages(user._id));
     await dispatch(setActivePanelChat());
     dispatch(setShouldFocusChatInput(true));
   };
 
   const handleChatDelete = async id => {
-    await dispatch(softDeleteSingleChat(id));
+    await dispatch(softDeleteSingleChat({userId: user._id, chatId: id}));
     await dispatch(setActivePanelInfo());
     await dispatch(setActiveChat(null));
     await dispatch(setFocusedChat(null));
@@ -109,7 +112,7 @@ const SidePanel = ({ setSeeFeedback, isAnalyticsSidePanel }) => {
   };
 
   const handleClearConversations = () => {
-    dispatch(softDeleteSelectedDropdownCourseChats());
+    dispatch(softDeleteSelectedDropdownCourseChats(user._id));
     dispatch(setActivePanelInfo());
     dispatch(setActiveChat(null));
     dispatch(setFocusedChat(null));

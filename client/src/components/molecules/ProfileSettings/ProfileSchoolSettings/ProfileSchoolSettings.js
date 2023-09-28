@@ -24,6 +24,7 @@ const ProfileSchoolSettings = ({ handleClose }) => {
   const schoolsWithCourses = useSelector(schoolsWithCoursesSelector);
   const userFavoriteCourses = useSelector(userFavouriteCoursesSelector);
   const userSchool = useSelector(userSchoolWithCoursesSelector);
+  const user = useSelector(state => state.user);
   const theme = useTheme();
 
   const [selectedSchool, setSelectedSchool] = useState(userSchool);
@@ -58,7 +59,8 @@ const ProfileSchoolSettings = ({ handleClose }) => {
     const favourites = Object.keys(selectedCourses);
     const school = selectedSchool._id;
     const updatedUser = { school, favourites };
-    dispatch(updateUser(updatedUser));
+    // dispatch(updateUser(updatedUser));
+    dispatch(updateUser({userId: user._id, updatedUser: updatedUser}));
     handleClose();
   };
 

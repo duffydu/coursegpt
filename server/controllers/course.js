@@ -65,7 +65,8 @@ let trainingStatuses = {};
 
 async function improveModel(req, res) {
   try {
-    const submitterId = req.user.id;
+    // const submitterId = req.user.id;
+    const submitterId = req.params.userId;
     const courseId = req.params.courseId;
     const key = `${courseId}-${submitterId}`;
     if (
@@ -99,7 +100,8 @@ async function improveModel(req, res) {
 }
 
 async function getTrainingStatus(req, res) {
-  const submitterId = req.user.id;
+  // const submitterId = req.user.id;
+  const submitterId = req.params.userId;
   const courseId = req.params.courseId;
   const key = `${courseId}-${submitterId}`;
   const responseStatus = trainingStatuses[key] || { status: 'not-started' };

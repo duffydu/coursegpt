@@ -28,9 +28,9 @@ const handleRequestError = error => {
 // Async Functions
 export const fetchUserChats = createAsyncThunk(
   'chats/fetchUserChats',
-  async () => {
+  async (userId) => {
     try {
-      const response = await api.get(`/chats`);
+      const response = await api.get(`/${userId}/chats`);
       for (const chat of response.data.chats) {
         if (!chat.title || chat.title.length === 0) {
           const chatTitleRes = await api.post(`/chats/${chat._id}/chat-title`);
@@ -46,9 +46,11 @@ export const fetchUserChats = createAsyncThunk(
 
 export const createChatTitle = createAsyncThunk(
   'chats/createChatTitle',
-  async chatId => {
+  async (args) => {
+    var userId = args.userId;
+    var chatId = args.chatId;
     try {
-      const response = await api.post(`/chats/${chatId}/chat-title`);
+      const response = await api.post(`/${userId}/chats/${chatId}/chat-title`);
       return response.data.chat;
     } catch (error) {
       handleRequestError(error);
@@ -67,10 +69,10 @@ export const fetchChat = createAsyncThunk('chats/fetchChat', async chatId => {
 
 export const createChatWithSelectedDropdownCourse = createAsyncThunk(
   'chats/createChatWithSelectedDropdownCourse',
-  async (_, { getState }) => {
+  async (userId, { getState }) => {
     try {
       const courseId = getState().courses.currentlySelectedDropdownCourse._id;
-      const response = await api.post(`/chats`, {
+      const response = await api.post(`/${userId}/chats`, {
         course: courseId,
       });
       return response.data.chat;
@@ -82,7 +84,7 @@ export const createChatWithSelectedDropdownCourse = createAsyncThunk(
 
 export const softDeleteSelectedDropdownCourseChats = createAsyncThunk(
   'chats/softDeleteSelectedDropdownCourseChats',
-  async (_, { getState }) => {
+  async (userId, { getState }) => {
     try {
       const courseId = getState().courses.currentlySelectedDropdownCourse
         ? getState().courses.currentlySelectedDropdownCourse._id
@@ -95,7 +97,7 @@ export const softDeleteSelectedDropdownCourseChats = createAsyncThunk(
       }
       const updates = { $set: { deleted: true } };
       const body = { filter, updates };
-      const response = await api.patch(`/chats`, body);
+      const response = await api.patch(`/${userId}/chats`, body);
       return buildObjectMapFromArray(response.data.chats);
     } catch (error) {
       handleRequestError(error);
@@ -105,10 +107,12 @@ export const softDeleteSelectedDropdownCourseChats = createAsyncThunk(
 
 export const softDeleteSingleChat = createAsyncThunk(
   'chats/softDeleteSingleChat',
-  async chatId => {
+  async args => {
+    var userId = args.userId;
+    var chatId = args.chatId;
     try {
       const body = { deleted: true };
-      const response = await api.patch(`/chats/${chatId}`, body);
+      const response = await api.patch(`/${userId}/chats/${chatId}`, body);
       return response.data.chat;
     } catch (error) {
       handleRequestError(error);

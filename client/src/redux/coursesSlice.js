@@ -27,7 +27,7 @@ export const fetchSchoolCourse = createAsyncThunk(
   async ({ schoolId, courseId }) => {
     try {
       const response = await api.get(
-        `/schools/${schoolId}/courses/${courseId}`
+        `/schools/${schoolId}/courses/user/${courseId}`
       );
       return response.data.course;
     } catch (error) {
@@ -38,13 +38,13 @@ export const fetchSchoolCourse = createAsyncThunk(
 
 export const trainCurrentlySelectedDropdownCourse = createAsyncThunk(
   'courses/trainCurrentlySelectedDropdownCourse',
-  async (content, { getState }) => {
+  async ({userId, content}, { getState }) => {
     try {
       const schoolId =
         getState().courses.currentlySelectedDropdownCourse?.school;
       const courseId = getState().courses.currentlySelectedDropdownCourse?._id;
 
-      await api.put(`/schools/${schoolId}/courses/${courseId}/improve-model`, {
+      await api.put(`/schools/${schoolId}/courses/${userId}/${courseId}/improve-model`, {
         content,
       });
 
@@ -52,7 +52,7 @@ export const trainCurrentlySelectedDropdownCourse = createAsyncThunk(
       do {
         await new Promise(resolve => setTimeout(resolve, 3000)); // polls every 3 seconds for training status
         const response = await api.get(
-          `/schools/${schoolId}/courses/${courseId}/training-status`
+          `/schools/${schoolId}/courses/${userId}/${courseId}/training-status`
         );
         status = response.data.status;
       } while (status !== 'complete');
@@ -68,7 +68,7 @@ export const fetchSchoolCourses = createAsyncThunk(
   'courses/fetchSchoolCourses',
   async schoolId => {
     try {
-      const response = await api.get(`/schools/${schoolId}/courses`);
+      const response = await api.get(`/schools/${schoolId}/courses/user`);
       return buildObjectMapFromArray(response.data.courses);
     } catch (error) {
       handleRequestError(error);

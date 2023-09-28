@@ -42,6 +42,7 @@ const keyMap = { SHOW_SEARCH: ['command+f', 'ctrl+f'] };
 
 const RightSection = () => {
   const dispatch = useDispatch();
+  const user = useSelector(state => state.user);
   const activePanel = useSelector(state => state.user.activePanel);
   const isTrainingCourse = useSelector(state => state.courses.loading);
   const currentUserInput = useSelector(
@@ -97,17 +98,18 @@ const RightSection = () => {
   const onInputSubmit = async e => {
     if (e.type === 'keydown' && e.key !== 'Enter') return;
     if (!activeChat) {
-      await dispatch(createChatWithSelectedDropdownCourse(selectedCourse._id));
+      // await dispatch(createChatWithSelectedDropdownCourse(selectedCourse._id));
+      await dispatch(createChatWithSelectedDropdownCourse(user._id));
     }
     dispatch(setCurrentUserInput(''));
     dispatch(setActivePanelChat());
-    await dispatch(createUserMessageInActiveChat(currentUserInput)).then(
+    await dispatch(createUserMessageInActiveChat({userId: user._id, message: currentUserInput})).then(
       async newMessagePayload => {
         dispatch(setActiveChat(newMessagePayload.payload?.chat));
         dispatch(setFocusedChat(newMessagePayload.payload?.chat));
-        await dispatch(getGptResponseInChat(newMessagePayload.payload)).then(
+        await dispatch(getGptResponseInChat({userId: user._id, userMessageObject: newMessagePayload.payload})).then(
           async newGptMessage => {
-            dispatch(createChatTitle(newGptMessage.payload?.chat));
+            dispatch(createChatTitle({userId: user._id, chatId: newGptMessage.payload?.chat}));
           }
         );
       }

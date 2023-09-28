@@ -8,9 +8,9 @@ const {
   createChatTitle,
   softDeleteChats,
 } = require('../controllers/chat');
-const { validateToken } = require('../controllers/auth');
+// const { validateToken } = require('../controllers/auth');
 
-router.use(validateToken);
+// router.use(validateToken);
 
 router.get('/:chatId', getChat);
 

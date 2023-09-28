@@ -6,7 +6,7 @@ import {
   setFocusedChat,
   setHighlightMessage,
 } from '../../../redux/chatsSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentlySelectedDropdownCourse } from '../../../redux/coursesSlice';
 import { fetchActiveChatMessages } from '../../../redux/messagesSlice';
 import { setActivePanelChat } from '../../../redux/userSlice';
@@ -16,6 +16,7 @@ import { setIsSearchBarVisible } from '../../../redux/uiSlice';
 const MessageResult = ({ result }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const user = useSelector(state => state.user);
 
   const highlightedTexts = mapHighlightedTextToArray(result);
 
@@ -28,7 +29,7 @@ const MessageResult = ({ result }) => {
     await dispatch(setActiveChat(chatId));
     await dispatch(setFocusedChat(chatId));
     // Render messages on the right (with the message highlighted)
-    await dispatch(fetchActiveChatMessages());
+    await dispatch(fetchActiveChatMessages(user._id));
     // collapse search panel
     await dispatch(setActivePanelChat());
     // set ref at the messageId and autoscroll to that reference

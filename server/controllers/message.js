@@ -1,7 +1,7 @@
 const Chat = require('../models/chat');
 const Message = require('../models/message');
 const { ask } = require('../gpt/ask');
-const { generateChatTitle } = require('../gpt/openAI');
+// const { generateChatTitle } = require('../gpt/openAI');
 const mongoose = require('mongoose');
 const QAPair = require('../models/qaPair');
 const ObjectId = mongoose.Types.ObjectId;
@@ -17,7 +17,8 @@ async function getAllMessages(req, res) {
 // queries: search [required], course [optional]
 async function searchUserMessages(req, res) {
   try {
-    const userId = req.user.id;
+    // const userId = req.user.id;
+    const userId = req.params.userId;
     const search = req.query.search;
     if (!search || search === '') {
       return res.status(422).json({
@@ -81,7 +82,8 @@ async function searchUserMessages(req, res) {
 async function createUserMessage(req, res) {
   try {
     const chatId = req.params.chatId;
-    const userId = req.user.id;
+    // const userId = req.user.id;
+    const userId = req.params.userId;
     const userInputMessage = req.body.content;
     const message = new Message({
       chat: chatId,
@@ -107,7 +109,8 @@ let gptResponses = {};
 async function getGptResponse(req, res) {
   try {
     const chatId = req.params.chatId;
-    const userId = req.user.id;
+    // const userId = req.user.id;
+    const userId = req.params.userId;
     const userMessageObject = req.body;
     if (gptResponses[chatId] && gptResponses[chatId].status === 'in-progress') {
       return res

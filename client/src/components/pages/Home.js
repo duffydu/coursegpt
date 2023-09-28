@@ -59,7 +59,7 @@ function Home() {
         dispatch(setActivePanelInfo());
         dispatch(setWaitingFirstMessage(true));
       }
-      await dispatch(fetchUserChats());
+      await dispatch(fetchUserChats(user._id));
       setIsLoading(false);
     } catch (error) {
       dispatch(setUserError(error));

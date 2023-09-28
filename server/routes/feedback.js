@@ -2,17 +2,17 @@ const express = require('express');
 const router = express.Router({ mergeParams: true }); // mergeParams to access schoolId (ie parent route)
 const {
   getFeedback,
-  createFeedback,
+  // createFeedback,
   updateFeedback,
   deleteFeedback,
 } = require('../controllers/feedback');
-const { validateToken } = require('../controllers/auth');
+// const { validateToken } = require('../controllers/auth');
 
-router.use(validateToken);
+// router.use(validateToken);
 
 router.get('/:feedbackId', getFeedback);
 
-router.post('/', createFeedback);
+// router.post('/', createFeedback);
 
 router.put('/:feedbackId', updateFeedback);
 

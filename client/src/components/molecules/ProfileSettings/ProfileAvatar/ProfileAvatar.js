@@ -34,13 +34,14 @@ const avatarImages = [
 
 const ProfileAvatar = ({ handleClose }) => {
   const dispatch = useDispatch();
+  const user = useSelector(state => state.user);
   const theme = useTheme();
   const profileImage = useSelector(state => state.user.profilePicture);
   const [selectedAvatar, setSelectedAvatar] = useState(profileImage);
 
   const handleSave = () => {
     const updatedUser = { profilePicture: selectedAvatar };
-    dispatch(updateUser(updatedUser));
+    dispatch(updateUser(user._id, updatedUser));
     handleClose();
   };
 

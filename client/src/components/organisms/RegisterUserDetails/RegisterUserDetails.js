@@ -91,7 +91,9 @@ export default function RegisterUserDetails() {
       favourites: favourites,
       userType: userType,
     };
-    dispatch(updateUser(updatedUser));
+    // dispatch(updateUser(updatedUser));
+    console.log("before dispatch");
+    dispatch(updateUser({userId: user._id, updatedUser: updatedUser}));
   };
 
   const renderSchools = () => {

@@ -9,6 +9,7 @@ import {
 // State Handlers
 const updateUserData = (state, action) => {
   const userFields = [
+    '_id',
     'profilePicture',
     'firstName',
     'lastName',
@@ -48,36 +49,55 @@ const handleRequestError = error => {
 };
 
 // Async Functions
-const createUserRequest = (name, requestType, path) => {
-  return createAsyncThunk(`user/${name}`, async (payload = null) => {
+// const createUserRequest = (name, requestType, path) => {
+//   return createAsyncThunk(`user/${name}`, async (payload = null) => {
+//     try {
+//       const response = await api[requestType](`${path}/`, payload);
+//       return response.data.user;
+//     } catch (error) {
+//       handleRequestError(error);
+//     }
+//   });
+// };
+
+// Create an async thunk to update a user
+export const updateUser = createAsyncThunk(
+  'user/updateUser',
+  async ({ userId, updatedUser }) => {
+  // payload = {all target user fields to update according to the exact user schema}
+  // Example: {firstName: "John", lastName: "Doe", email: "efpyi@example.com"}
     try {
-      const response = await api[requestType](`${path}/`, payload);
+      console.log("before api call...");
+      console.log(userId);
+      console.log(updatedUser);
+      const response = await api.patch(`/users/${userId}`, updatedUser);
+      console.log(response);
       return response.data.user;
     } catch (error) {
       handleRequestError(error);
     }
-  });
-};
-
-export const updateUser = createUserRequest(
-  'updateUser',
-  'patch',
-  '/users'
-  // payload = {all target user fields to update according to the exact user schema}
-  // Example: {firstName: "John", lastName: "Doe", email: "efpyi@example.com"}
+  }
 );
 
-export const deleteUser = createUserRequest(
-  'deleteUser',
-  'delete',
-  '/users'
-  // payload = null
+export const deleteUser = createAsyncThunk(
+  'user/deleteUser',
+  async ({ userId, deletedUser }) => {
+  // payload = {all target user fields to update according to the exact user schema}
+  // Example: {firstName: "John", lastName: "Doe", email: "efpyi@example.com"}
+    try {
+      const response = await api.patch(`/users/${userId}`, deletedUser);
+      return response.data.user;
+    } catch (error) {
+      handleRequestError(error);
+    }
+  }
 );
 
 // User Slice
 const userSlice = createSlice({
   name: 'user',
   initialState: {
+    _id: null,
     profilePicture: null,
     firstName: null,
     lastName: null,
